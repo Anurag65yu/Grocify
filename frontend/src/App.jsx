@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import { API_ENABLED } from "./api/client";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -26,6 +27,16 @@ import AdminOrders from "./Pages/admin/AdminOrders";
 
 function App() {
   const [search, setSearch] = useState("");
+
+  // Wake up the Render free-tier backend as soon as the app loads.
+  // Render spins down after 15 min of inactivity; first request can take 50+ seconds.
+  // Pinging /health immediately means the server is warm by the time the user
+  // tries to log in or register.
+  useEffect(() => {
+    if (!API_ENABLED) return;
+    const base = import.meta.env.VITE_API_URL;
+    fetch(`${base}/health`, { method: "GET" }).catch(() => {});
+  }, []);
 
   return (
     <>
