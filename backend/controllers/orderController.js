@@ -1,8 +1,9 @@
+const mongoose = require('mongoose');
 const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
 
-// PLACE ORDER — accepts items from request body (frontend cart) or falls back to server cart
+// PLACE ORDER
 const placeOrder = async (req, res) => {
   try {
     const { address, items: clientItems, couponCode, discountAmount: clientDiscount } = req.body;
@@ -14,16 +15,23 @@ const placeOrder = async (req, res) => {
     let orderItemsData;
 
     if (clientItems && clientItems.length > 0) {
-      // Items sent directly from frontend (localStorage cart)
+      // Validate all productIds are proper MongoDB ObjectIds
+      const invalidIds = clientItems.filter(i => !mongoose.Types.ObjectId.isValid(i.productId));
+      if (invalidIds.length > 0) {
+        return res.status(400).json({
+          message: 'Your cart contains outdated items. Please clear your cart and add products again.',
+        });
+      }
+
       const productIds = clientItems.map(i => i.productId);
       const products = await Product.find({ _id: { $in: productIds } });
 
       for (const ci of clientItems) {
         const product = products.find(p => p._id.toString() === ci.productId);
-        if (!product) return res.status(400).json({ message: 'Product not found' });
+        if (!product) return res.status(400).json({ message: 'Product not found. Please clear your cart and add products again.' });
         if (product.stock < ci.quantity) {
           return res.status(400).json({
-            message: `Not enough stock for ${product.name}. Available: ${product.stock}`
+            message: `Not enough stock for ${product.name}. Available: ${product.stock}`,
           });
         }
       }
@@ -33,7 +41,6 @@ const placeOrder = async (req, res) => {
         return { product: product._id, quantity: ci.quantity, priceAtPurchase: product.price };
       });
     } else {
-      // Fall back to server-side cart
       const cart = await Cart.findOne({ user: req.user._id }).populate('items.product');
       if (!cart || cart.items.length === 0) {
         return res.status(400).json({ message: 'Cart is empty' });
@@ -41,7 +48,7 @@ const placeOrder = async (req, res) => {
       for (const item of cart.items) {
         if (item.product.stock < item.quantity) {
           return res.status(400).json({
-            message: `Not enough stock for ${item.product.name}. Available: ${item.product.stock}`
+            message: `Not enough stock for ${item.product.name}. Available: ${item.product.stock}`,
           });
         }
       }
@@ -79,7 +86,7 @@ const placeOrder = async (req, res) => {
   }
 };
 
-// GET orders — returns all orders for admin, own orders for regular users
+// GET orders
 const getMyOrders = async (req, res) => {
   try {
     const filter = req.user.role === 'admin' ? {} : { user: req.user._id };
@@ -92,13 +99,13 @@ const getMyOrders = async (req, res) => {
   }
 };
 
-// GET single order by ID
+// GET single order
 const getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id).populate('items.product');
     if (!order) return res.status(404).json({ message: 'Order not found' });
     if (order.user.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Not authorized to view this order' });
+      return res.status(403).json({ message: 'Not authorized' });
     }
     res.status(200).json(order);
   } catch (err) {
@@ -106,7 +113,7 @@ const getOrderById = async (req, res) => {
   }
 };
 
-// UPDATE delivery status (admin only)
+// UPDATE delivery status (admin)
 const updateOrderStatus = async (req, res) => {
   try {
     const { deliveryStatus } = req.body;
