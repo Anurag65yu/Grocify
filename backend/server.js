@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
+const autoSeed = require("./config/autoSeed");
 
 const authRoutes = require("./routes/authRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
@@ -17,8 +18,6 @@ dotenv.config();
 
 const app = express();
 
-// Build allowed-origin list from FRONTEND_URL env var (comma-separated).
-// If FRONTEND_URL is not set, every origin is allowed (open for demos/dev).
 const explicitOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(",").map((o) => o.trim()).filter(Boolean)
   : [];
@@ -35,8 +34,6 @@ const corsOptions = {
   credentials: false,
 };
 
-// Handle CORS preflight for all routes.
-// Express 5 requires a regex or named wildcard — plain "*" is not valid.
 app.options(/(.*)/, cors(corsOptions));
 app.use(cors(corsOptions));
 app.use(express.json());
@@ -63,6 +60,7 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   await connectDB();
+  await autoSeed();
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
