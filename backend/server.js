@@ -16,11 +16,31 @@ const adminRoutes = require("./routes/adminRoutes");
 dotenv.config();
 
 const app = express();
-const allowedOrigins = process.env.FRONTEND_URL
-  ? process.env.FRONTEND_URL.split(",").map((origin) => origin.trim())
-  : true;
 
-app.use(cors({ origin: allowedOrigins }));
+// Build allowed-origin list from FRONTEND_URL env var (comma-separated).
+// If FRONTEND_URL is not set, every origin is allowed (open for demos/dev).
+const explicitOrigins = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL.split(",").map((o) => o.trim()).filter(Boolean)
+  : [];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow server-to-server requests (no Origin header)
+    if (!origin) return callback(null, true);
+    // Allow everything when no explicit list is configured
+    if (explicitOrigins.length === 0) return callback(null, true);
+    // Allow if origin is in the explicit list
+    if (explicitOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error("CORS: origin not allowed"));
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: false,
+};
+
+// Handle CORS preflight (OPTIONS) for all routes first
+app.options("*", cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get("/", (req, res) => {
