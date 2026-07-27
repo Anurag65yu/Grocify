@@ -10,7 +10,7 @@ const FREE_ABOVE = 499;
 
 function Checkout() {
   const navigate = useNavigate();
-  
+
   const { user, isAuthenticated } = useAuth();
   const { cartItems, cartTotal } = useContext(CartContext);
   const { validateCoupon } = useCatalog();
@@ -21,30 +21,32 @@ function Checkout() {
   const [applied, setApplied] = useState(null);
   const [error, setError] = useState("");
   const [couponMsg, setCouponMsg] = useState("");
+  const [couponLoading, setCouponLoading] = useState(false);
 
   const deliveryFee = cartTotal >= FREE_ABOVE ? 0 : DELIVERY_FEE;
   const discount = applied?.discount || 0;
   const grandTotal = Math.max(0, cartTotal + deliveryFee - discount);
 
   const lines = useMemo(
-    () =>
-      cartItems.map((item) => ({
-        ...item,
-        lineTotal: item.price * item.quantity,
-      })),
+    () => cartItems.map((item) => ({ ...item, lineTotal: item.price * item.quantity })),
     [cartItems]
   );
 
-  const applyCoupon = () => {
+  const applyCoupon = async () => {
     setCouponMsg("");
-    const result = validateCoupon(couponCode.trim(), cartTotal);
-    if (!result.ok) {
-      setApplied(null);
-      setCouponMsg(result.message);
-      return;
+    setCouponLoading(true);
+    try {
+      const result = await validateCoupon(couponCode.trim(), cartTotal);
+      if (!result.ok) {
+        setApplied(null);
+        setCouponMsg(result.message);
+      } else {
+        setApplied(result);
+        setCouponMsg(result.message);
+      }
+    } finally {
+      setCouponLoading(false);
     }
-    setApplied(result);
-    setCouponMsg(result.message);
   };
 
   const goToPayment = (e) => {
@@ -134,8 +136,8 @@ function Checkout() {
                 onChange={(e) => setCouponCode(e.target.value)}
                 placeholder="e.g. GROCIFY10"
               />
-              <button type="button" className="btn-ghost" onClick={applyCoupon}>
-                Apply
+              <button type="button" className="btn-ghost" onClick={applyCoupon} disabled={couponLoading}>
+                {couponLoading ? "..." : "Apply"}
               </button>
             </div>
           </label>

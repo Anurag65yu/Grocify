@@ -34,9 +34,7 @@ function Payment() {
   const [upiId, setUpiId] = useState("");
 
   useEffect(() => {
-    if (!checkout) {
-      navigate("/checkout");
-    }
+    if (!checkout) navigate("/checkout");
   }, [checkout, navigate]);
 
   if (!checkout) {
@@ -51,10 +49,7 @@ function Payment() {
     e.preventDefault();
     setError("");
 
-    if (!isAuthenticated) {
-      navigate("/login");
-      return;
-    }
+    if (!isAuthenticated) { navigate("/login"); return; }
 
     if (method === "upi" && !upiId.trim()) {
       setError("Enter a valid UPI ID");
@@ -68,38 +63,41 @@ function Payment() {
     }
 
     setProcessing(true);
-
-    // Simulate gateway delay
     await new Promise((r) => setTimeout(r, 900));
 
-    const order = placeOrder({
-      userId: user.id,
-      userName: user.name,
-      userEmail: user.email,
-      phone: checkout.phone,
-      address: checkout.address,
-      items: checkout.items.map((i) => ({
-        id: i.id,
-        name: i.name,
-        image: i.image,
-        price: i.price,
-        quantity: i.quantity,
-      })),
-      subtotal: checkout.subtotal,
-      deliveryFee: checkout.deliveryFee,
-      discount: checkout.discount,
-      couponCode: checkout.couponCode,
-      totalAmount: checkout.total,
-      paymentMethod: method,
-    });
+    try {
+      const order = await placeOrder({
+        userId: user.id,
+        userName: user.name,
+        userEmail: user.email,
+        phone: checkout.phone,
+        address: checkout.address,
+        items: checkout.items.map((i) => ({
+          id: i.id,
+          name: i.name,
+          image: i.image,
+          price: i.price,
+          quantity: i.quantity,
+        })),
+        subtotal: checkout.subtotal,
+        deliveryFee: checkout.deliveryFee,
+        discount: checkout.discount,
+        couponCode: checkout.couponCode,
+        totalAmount: checkout.total,
+        paymentMethod: method,
+      });
 
-    decrementStock(checkout.items);
-    if (checkout.couponCode) markCouponUsed(checkout.couponCode);
+      decrementStock(checkout.items);
+      if (checkout.couponCode) markCouponUsed(checkout.couponCode);
 
-    clearCart();
-    sessionStorage.removeItem("grocify_checkout");
-    sessionStorage.setItem("grocify_last_order", order.id);
-    navigate(`/order-success/${order.id}`);
+      clearCart();
+      sessionStorage.removeItem("grocify_checkout");
+      sessionStorage.setItem("grocify_last_order", order.id);
+      navigate(`/order-success/${order.id}`);
+    } catch (err) {
+      setError(err.message || "Order placement failed. Please try again.");
+      setProcessing(false);
+    }
   };
 
   return (
@@ -202,31 +200,15 @@ function Payment() {
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span>Delivery</span>
-              <span>
-                {checkout.deliveryFee === 0 ? "Free" : `₹${checkout.deliveryFee}`}
-              </span>
+              <span>{checkout.deliveryFee === 0 ? "Free" : `₹${checkout.deliveryFee}`}</span>
             </div>
             {checkout.discount > 0 && (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  color: "#0aad0a",
-                }}
-              >
+              <div style={{ display: "flex", justifyContent: "space-between", color: "#0aad0a" }}>
                 <span>Discount ({checkout.couponCode})</span>
                 <span>-₹{checkout.discount}</span>
               </div>
             )}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                fontWeight: 700,
-                fontSize: 18,
-                marginTop: 8,
-              }}
-            >
+            <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, fontSize: 18, marginTop: 8 }}>
               <span>Pay</span>
               <span>₹{checkout.total}</span>
             </div>
@@ -242,13 +224,7 @@ function Payment() {
           </button>
           <Link
             to="/checkout"
-            style={{
-              display: "block",
-              textAlign: "center",
-              marginTop: 12,
-              color: "#0aad0a",
-              fontSize: 14,
-            }}
+            style={{ display: "block", textAlign: "center", marginTop: 12, color: "#0aad0a", fontSize: 14 }}
           >
             Back to checkout
           </Link>
