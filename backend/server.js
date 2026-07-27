@@ -25,11 +25,8 @@ const explicitOrigins = process.env.FRONTEND_URL
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow server-to-server requests (no Origin header)
     if (!origin) return callback(null, true);
-    // Allow everything when no explicit list is configured
     if (explicitOrigins.length === 0) return callback(null, true);
-    // Allow if origin is in the explicit list
     if (explicitOrigins.includes(origin)) return callback(null, true);
     return callback(new Error("CORS: origin not allowed"));
   },
@@ -38,8 +35,9 @@ const corsOptions = {
   credentials: false,
 };
 
-// Handle CORS preflight (OPTIONS) for all routes first
-app.options("*", cors(corsOptions));
+// Handle CORS preflight for all routes.
+// Express 5 requires a regex or named wildcard — plain "*" is not valid.
+app.options(/(.*)/, cors(corsOptions));
 app.use(cors(corsOptions));
 app.use(express.json());
 
