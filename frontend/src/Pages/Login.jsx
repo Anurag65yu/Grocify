@@ -9,15 +9,19 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     try {
-      const user = login({ email, password });
+      const user = await login({ email, password });
       navigate(user.role === "admin" ? "/admin" : "/");
     } catch (err) {
       setError(err.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,7 +46,9 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
         <p style={{ fontSize: 12, color: "#888", marginTop: 12 }}>
           Demo: user@grocify.com / user123
           <br />

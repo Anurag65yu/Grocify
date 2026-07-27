@@ -10,15 +10,19 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     try {
-      register({ name, email, password });
+      await register({ name, email, password });
       navigate("/");
     } catch (err) {
       setError(err.message || "Registration failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,7 +54,9 @@ function Register() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit">Register</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Creating account..." : "Register"}
+        </button>
         <p>
           Already have an account?
           <Link to="/login">Login</Link>
