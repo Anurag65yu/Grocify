@@ -17,6 +17,9 @@ import OrderSuccess from "./Pages/OrderSuccess";
 import OrderHistory from "./Pages/OrderHistory";
 import OrderTracking from "./Pages/OrderTracking";
 import Profile from "./Pages/Profile";
+import HelpCenter from "./Pages/HelpCenter";
+import DeliveryInfo from "./Pages/DeliveryInfo";
+import ReturnPolicy from "./Pages/ReturnPolicy";
 
 import AdminLayout from "./Pages/admin/AdminLayout";
 import AdminDashboard from "./Pages/admin/AdminDashboard";
@@ -28,10 +31,6 @@ import AdminOrders from "./Pages/admin/AdminOrders";
 function App() {
   const [search, setSearch] = useState("");
 
-  // Wake up the Render free-tier backend as soon as the app loads.
-  // Render spins down after 15 min of inactivity; first request can take 50+ seconds.
-  // Pinging /health immediately means the server is warm by the time the user
-  // tries to log in or register.
   useEffect(() => {
     if (!API_ENABLED) return;
     const base = import.meta.env.VITE_API_URL;
@@ -56,6 +55,9 @@ function App() {
         <Route path="/orders" element={<OrderHistory />} />
         <Route path="/orders/:orderId/track" element={<OrderTracking />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/help" element={<HelpCenter />} />
+        <Route path="/delivery-info" element={<DeliveryInfo />} />
+        <Route path="/return-policy" element={<ReturnPolicy />} />
 
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />

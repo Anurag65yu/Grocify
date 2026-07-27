@@ -49,14 +49,8 @@ function Login() {
         <button type="submit" disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </button>
-        <p style={{ fontSize: 12, color: "#888", marginTop: 12 }}>
-          Demo: user@grocify.com / user123
-          <br />
-          Admin: admin@grocify.com / admin123
-        </p>
         <p>
-          Don&apos;t have an account?
-          <Link to="/register">Register</Link>
+          Don&apos;t have an account? <Link to="/register">Register</Link>
         </p>
       </form>
     </div>
