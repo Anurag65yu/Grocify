@@ -1,0 +1,132 @@
+.header {
+  width: 100%;
+  background: rgb(10, 54, 10);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.top-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 5%;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.logo a {
+  font-size: 28px;
+  font-weight: bold;
+  color: rgb(203, 203, 122);
+  font-family: Georgia, "Times New Roman", serif;
+  display: inline-block;
+  transition: 0.3s ease;
+}
+
+.logo a:hover {
+  transform: scale(1.05);
+}
+
+.location {
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  white-space: nowrap;
+}
+
+.header-search {
+  flex: 1;
+  max-width: 480px;
+  min-width: 160px;
+}
+
+.header-buttons {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.header-buttons a,
+.logout-btn {
+  font-weight: 600;
+  color: white;
+  font-size: 14px;
+  background: transparent;
+  padding: 0;
+}
+
+.logout-btn:hover,
+.header-buttons a:hover {
+  color: rgb(203, 203, 122);
+}
+
+.menu-toggle {
+  display: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.bottom-nav {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  padding: 12px 5%;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  overflow-x: auto;
+}
+
+.bottom-nav a {
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  white-space: nowrap;
+}
+
+.bottom-nav a:hover {
+  color: #7dcf7d;
+}
+
+@media (max-width: 900px) {
+  .menu-toggle {
+    display: inline-block;
+  }
+
+  .header-buttons {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 8px 0 4px;
+  }
+
+  .header-buttons.open {
+    display: flex;
+  }
+
+  .header-search {
+    order: 3;
+    width: 100%;
+    max-width: none;
+  }
+
+  .bottom-nav {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .location {
+    display: none;
+  }
+
+  .logo a {
+    font-size: 24px;
+  }
+}

@@ -1,0 +1,63 @@
+.success-container{
+
+    min-height:70vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+
+
+.success-box{
+
+    background:white;
+
+    padding:40px;
+
+    text-align:center;
+
+    border-radius:15px;
+
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+
+}
+
+
+
+.success-box h1{
+
+    color:#0aad0a;
+
+    margin-bottom:20px;
+
+}
+
+
+
+.success-box p{
+
+    color:#555;
+
+    margin-bottom:25px;
+
+}
+
+
+
+.success-box button{
+
+    padding:12px 25px;
+
+    background:#0aad0a;
+
+    color:white;
+
+    border-radius:8px;
+
+    font-size:16px;
+
+}

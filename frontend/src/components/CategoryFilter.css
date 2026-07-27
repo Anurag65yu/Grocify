@@ -1,0 +1,88 @@
+.category-filter{
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:10px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+
+}
+
+
+
+.category-filter h3{
+
+    margin-bottom:15px;
+
+    font-size:20px;
+
+}
+
+
+
+.category-list{
+
+    display:flex;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+}
+
+
+
+.category-list button{
+
+    padding:8px 18px;
+
+    border-radius:20px;
+
+    background:#f1f1f1;
+
+    font-size:14px;
+
+    transition:0.3s;
+
+}
+
+
+
+.category-list button:hover{
+
+    background:rgb(10, 54, 10);
+
+    color:white;
+
+}
+
+
+
+.category-list .active-category{
+
+    background:rgb(10, 54, 10);
+
+    color:white;
+
+}
+
+
+
+@media(max-width:600px){
+
+.category-list{
+
+    gap:8px;
+
+}
+
+
+.category-list button{
+
+    padding:7px 12px;
+
+}
+
+}

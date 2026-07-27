@@ -1,0 +1,67 @@
+.home-container{
+
+    width:90%;
+
+    margin:30px auto;
+
+}
+
+
+
+.home-container h1{
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+    color:rgb(10, 54, 10);
+
+}
+
+
+
+.product-section{
+
+    display:flex;
+
+    gap:30px;
+
+    margin-top:30px;
+
+}
+
+
+
+.products-area{
+
+    flex:1;
+
+}
+
+
+
+.product-grid{
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+}
+
+
+
+@media(max-width:900px){
+
+
+.product-section{
+
+    flex-direction:column;
+
+}
+
+
+}

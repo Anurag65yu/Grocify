@@ -1,0 +1,33 @@
+.category-page{
+
+    width:90%;
+
+    margin:30px auto;
+
+}
+
+
+
+.category-page h1{
+
+    text-align:center;
+
+    color:rgb(10, 54, 10);
+
+    margin-bottom:30px;
+
+}
+
+
+
+.category-products{
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(auto-fit,minmax(220px,1fr));
+
+    gap:25px;
+
+}

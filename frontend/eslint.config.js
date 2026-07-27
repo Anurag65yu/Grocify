@@ -1,0 +1,28 @@
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      globals: globals.browser,
+      parserOptions: { ecmaFeatures: { jsx: true } },
+    },
+    rules: {
+      // React 19's JSX transform does not require importing React. Keep these
+      // legacy imports harmless while the components are progressively updated.
+      "no-unused-vars": ["error", { varsIgnorePattern: "^(React|_)$", argsIgnorePattern: "^_" }],
+      // Context/provider modules intentionally export hooks as well as components.
+      "react-refresh/only-export-components": "off",
+    },
+  },
+])
