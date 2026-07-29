@@ -1,0 +1,144 @@
+/* Order tracking timeline */
+.tracking-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.eta-badge {
+  background: #fff3e0;
+  color: #e65100;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tracking-timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Each step row */
+.t-step {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+/* Left column: circle + connecting line */
+.t-icon-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.t-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2.5px solid #ddd;
+  background: #f8f8f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #ccc;
+  flex-shrink: 0;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.t-done .t-circle {
+  background: #2e7d32;
+  border-color: #2e7d32;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.t-current .t-circle {
+  background: #fff;
+  border-color: #2e7d32;
+  color: #2e7d32;
+  font-size: 18px;
+  box-shadow: 0 0 0 5px rgba(46, 125, 50, 0.14);
+}
+
+.t-line {
+  width: 2px;
+  flex: 1;
+  min-height: 28px;
+  background: #e0e0e0;
+  margin: 4px 0;
+  transition: background 0.3s;
+}
+
+.t-done .t-line {
+  background: #2e7d32;
+}
+
+/* Right column: text */
+.t-body {
+  padding: 8px 0 26px;
+  position: relative;
+}
+
+.t-label {
+  font-weight: 700;
+  font-size: 15px;
+  color: #222;
+  margin-bottom: 3px;
+}
+
+.t-upcoming .t-label {
+  color: #aaa;
+}
+
+.t-upcoming .t-circle {
+  color: #d0d0d0;
+  border-color: #e8e8e8;
+}
+
+.t-desc {
+  font-size: 13px;
+  color: #777;
+}
+
+.t-current .t-label {
+  color: #2e7d32;
+}
+
+.t-current .t-desc {
+  color: #555;
+}
+
+/* Animated pulse dot for current step */
+.t-pulse {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: #2e7d32;
+  border-radius: 50%;
+  margin-top: 8px;
+  animation: t-pulse-anim 1.3s ease-in-out infinite;
+}
+
+@keyframes t-pulse-anim {
+  0%, 100% { opacity: 1;   transform: scale(1);   }
+  50%       { opacity: 0.3; transform: scale(1.6); }
+}
+
+/* Delivery partner card */
+.partner-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #e8f5e9;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-top: 20px;
+}
