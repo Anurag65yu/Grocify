@@ -29,11 +29,46 @@
   transform: scale(1.05);
 }
 
-.location {
-  font-size: 14px;
+/* Location button — pill style */
+.location-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  padding: 5px 12px;
+  cursor: pointer;
+  color: #ffffff;
+  font-size: 13px;
   font-weight: 500;
-  color: white;
+  font-family: inherit;
   white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.location-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.location-pin {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.location-city {
+  color: #ffffff;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-chevron {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-left: 1px;
 }
 
 .header-search {
@@ -122,8 +157,8 @@
 }
 
 @media (max-width: 480px) {
-  .location {
-    display: none;
+  .location-city {
+    max-width: 80px;
   }
 
   .logo a {

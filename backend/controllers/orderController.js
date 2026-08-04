@@ -15,7 +15,6 @@ const placeOrder = async (req, res) => {
     let orderItemsData;
 
     if (clientItems && clientItems.length > 0) {
-      // Validate all productIds are proper MongoDB ObjectIds
       const invalidIds = clientItems.filter(i => !mongoose.Types.ObjectId.isValid(i.productId));
       if (invalidIds.length > 0) {
         return res.status(400).json({
@@ -113,7 +112,7 @@ const getOrderById = async (req, res) => {
   }
 };
 
-// UPDATE delivery status (admin)
+// UPDATE delivery status (admin only)
 const updateOrderStatus = async (req, res) => {
   try {
     const { deliveryStatus } = req.body;
@@ -125,4 +124,26 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-module.exports = { placeOrder, getMyOrders, getOrderById, updateOrderStatus };
+// CANCEL ORDER (user — only if pending or packed)
+const cancelOrder = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+
+    if (order.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Not authorized to cancel this order' });
+    }
+
+    if (!['pending', 'packed'].includes(order.deliveryStatus)) {
+      return res.status(400).json({ message: 'Order cannot be cancelled at this stage' });
+    }
+
+    order.deliveryStatus = 'cancelled';
+    await order.save();
+    res.status(200).json(order);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { placeOrder, getMyOrders, getOrderById, updateOrderStatus, cancelOrder };

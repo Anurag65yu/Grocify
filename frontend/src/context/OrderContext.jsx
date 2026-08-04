@@ -63,7 +63,12 @@ export function OrderProvider({ children }) {
 
   const updateOrderStatus = async (id, deliveryStatus) => {
     if (API_ENABLED) {
-      try { await apiFetch(`/api/orders/${id}/status`, { method: 'PUT', body: JSON.stringify({ deliveryStatus }) }); } catch {}
+      try {
+        await apiFetch(`/api/orders/${id}/status`, {
+          method: 'PUT',
+          body: JSON.stringify({ deliveryStatus }),
+        });
+      } catch {}
     }
     setOrders(prev => prev.map(o => {
       if (o.id !== id && o._id !== id) return o;
@@ -83,11 +88,18 @@ export function OrderProvider({ children }) {
     updateOrderStatus(id, STATUS_FLOW[idx + 1]);
   };
 
-  const cancelOrder = (id) => {
-    const order = getOrderById(id);
-    if (!order) return;
-    if (!['pending', 'packed'].includes(order.deliveryStatus)) return;
-    updateOrderStatus(id, 'cancelled');
+  const cancelOrder = async (id) => {
+    if (API_ENABLED) {
+      try {
+        await apiFetch(`/api/orders/${id}/cancel`, { method: 'PATCH' });
+      } catch (err) {
+        throw err;
+      }
+    }
+    setOrders(prev => prev.map(o => {
+      if (o.id !== id && o._id !== id) return o;
+      return { ...o, deliveryStatus: 'cancelled' };
+    }));
   };
 
   return (

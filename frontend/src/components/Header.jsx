@@ -39,7 +39,6 @@ function useLocationCity() {
   };
 
   useEffect(() => {
-    // Auto-detect only on first ever visit (no cached city)
     if (!localStorage.getItem("grocify_city")) detect();
   }, []);
 
@@ -65,23 +64,13 @@ function Header({ search, setSearch }) {
 
         <button
           type="button"
-          className="location"
+          className="location location-btn"
           onClick={detect}
           title="Click to detect your location"
-          style={{
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            color: "inherit",
-            padding: "4px 8px",
-            display: "flex",
-            alignItems: "center",
-            gap: 4,
-            fontFamily: "inherit",
-          }}
         >
-          <span>&#128205;</span>
-          <span>{detecting ? "Detecting..." : city}</span>
+          <span className="location-pin">&#128205;</span>
+          <span className="location-city">{detecting ? "Detecting..." : city}</span>
+          {!detecting && <span className="location-chevron">&#8964;</span>}
         </button>
 
         <div className="header-search">
